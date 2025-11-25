@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<mavlink>
+    <!-- The low IDs are used by common. -->
+    <!-- ArduPilot seems to use 4xxxx && 5xxxx -->
+    <!-- We start at 60000 -->
+    <include>../standard/message_definitions/v1.0/common.xml</include>
+    <version>0</version>
+    <dialect>0</dialect>
+    <enums>
+        <!-- Extension of MAV_CMD from common.xml -->
+        <enum name="MAV_CMD">
+            <entry value="60000" name="MAV_CMD_FOOBAR">
+                <description>This is a test.</description>
+                <param index="1" label="foo" units="m">Height of foo</param>
+                <param index="2" label="bar">blub</param>
+                <param index="3">Empty</param>
+                <param index="4">Empty</param>
+                <param index="5">Empty</param>
+                <param index="6">Empty</param>
+                <param index="7">Empty</param>
+            </entry>
+        </enum>
+        <enum name="PRESSURE_VESSEL_FLAG" bitmask="true">
+            <description>TODO</description>
+            <entry name="FLAG1" value="1">
+                <description></description>
+            </entry>
+        </enum>
+        <enum name="FLUID_TYPE">
+            <description>TODO</description>
+            <entry name="UNKNOWN" value="0">
+                <description>Unknown or unspecified</description>
+            </entry>
+            <entry name="AIR" value="1">
+                <description>Compressed Air</description>
+            </entry>
+            <entry name="NITROGEN" value="2">
+                <description>Nitrogen</description>
+            </entry>
+            <entry name="HELIUM" value="3">
+                <description>Helium</description>
+            </entry>
+            <entry name="NITROUS_OXIDE" value="5">
+                <description>Nitrous Oxide</description>
+            </entry>
+            <entry name="LIQUID_OXYGEN" value="6">
+                <description>Liquid Oxygen</description>
+            </entry>
+            <entry name="ETHANOL" value="7">
+                <description>Ethanol</description>
+            </entry>
+            <entry name="COMBUSTION" value="255">
+                <description>Combustion, use when describing a combustion chamber using PRESSURE_VESSEL messages</description>
+            </entry>
+        </enum>
+    </enums>
+    <messages>
+        <message id="60000" name="PRESSURE_VESSEL">
+            <description>TODO</description>
+            <field type="uint8_t" name="id" instance="true">Pressure Vessel ID</field>
+            <field type="uint16_t" name="flags" enum="PRESSURE_VESSEL_FLAG" display="bitmask">Pressure Vessel Flags</field>
+            <field type="uint16_t" name="fluid" enum="FLUID_TYPE">Contained Fluid</field>
+            <field type="uint16_t" name="pressure1" units="kPa">Measured Pressure (Sensor 1)</field>
+            <field type="uint16_t" name="pressure2" units="kPa">Measured Pressure (Sensor 2)</field>
+            <field type="uint16_t" name="rated_pressure" units="kPa">Rated Pressure</field>
+            <field type="uint16_t" name="temperature1" units="cdegC">Measured Temperature (Sensor 1)</field>
+            <field type="uint16_t" name="temperature2" units="cdegC">Measured Temperature (Sensor 2)</field>
+            <field type="uint16_t" name="volume" units="cm^3">Volume</field>
+            <field type="uint16_t" name="level" units="c%">Liquid level in tanks with (partially) liquid contents</field>
+        </message>
+    </messages>
+</mavlink>

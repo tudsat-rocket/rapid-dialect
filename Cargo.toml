@@ -1,0 +1,10 @@
+[package]
+name = "rapid-dialect"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mavspec = { version = "0.6.7", features = ["rust"] }
+
+[build-dependencies]
+mavspec = { version = "0.6.7", features = ["rust_gen"] }
