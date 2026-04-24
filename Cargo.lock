@@ -401,6 +401,8 @@ dependencies = [
 name = "rapid-dialect"
 version = "0.1.0"
 dependencies = [
+ "heck",
+ "mavinspect",
  "mavspec",
 ]
 

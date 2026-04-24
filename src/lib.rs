@@ -11,67 +11,9 @@ mod mavlink {
 pub use mavlink::dialects::rapid;
 pub use mavlink::dialects::Rapid;
 
-// TODO: mavspec generates these intos/froms for messages defined in the same standard,
-// but not for included ones. we should generate these automatically.
-impl Into<Rapid> for rapid::messages::Heartbeat {
-    fn into(self) -> Rapid {
-        Rapid::Heartbeat(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::Attitude {
-    fn into(self) -> Rapid {
-        Rapid::Attitude(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::LocalPositionNed {
-    fn into(self) -> Rapid {
-        Rapid::LocalPositionNed(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::ScaledImu {
-    fn into(self) -> Rapid {
-        Rapid::ScaledImu(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::ScaledImu2 {
-    fn into(self) -> Rapid {
-        Rapid::ScaledImu2(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::ScaledImu3 {
-    fn into(self) -> Rapid {
-        Rapid::ScaledImu3(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::ScaledPressure {
-    fn into(self) -> Rapid {
-        Rapid::ScaledPressure(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::ScaledPressure2 {
-    fn into(self) -> Rapid {
-        Rapid::ScaledPressure2(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::ScaledPressure3 {
-    fn into(self) -> Rapid {
-        Rapid::ScaledPressure3(self)
-    }
-}
-
-impl Into<Rapid> for rapid::messages::BatteryStatus {
-    fn into(self) -> Rapid {
-        Rapid::BatteryStatus(self)
-    }
-}
+// `From<rapid::messages::X> for Rapid` for every inherited message variant. mavspec only emits
+// these for messages defined natively in the rapid standard, so build.rs fills in the rest.
+include!(concat!(env!("OUT_DIR"), "/rapid_from_impls.rs"));
 
 use mavlink::dialects::minimal::enums::MavState;
 

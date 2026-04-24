@@ -8,3 +8,5 @@ mavspec = { version = "0.6.7", features = ["rust"] }
 
 [build-dependencies]
 mavspec = { version = "0.6.7", features = ["rust_gen"] }
+mavinspect = "0.6.6"
+heck = "0.5.0"
