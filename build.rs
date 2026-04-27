@@ -3,17 +3,19 @@ use std::fs;
 use std::path::Path;
 
 use heck::AsUpperCamelCase;
-use mavinspect::Inspector;
 use mavinspect::protocol::{Dialect, Protocol};
-use mavspec::rust::r#gen::BuildHelper;
+use mavinspect::Inspector;
+use mavspec::rust::r#gen::{Generator, GeneratorParams};
 
 const DIALECT: &str = "rapid";
 
 fn main() {
-    let sources = ["./message_definitions/standard", "./message_definitions/extra"];
+    let sources = [
+        "./message_definitions/standard",
+        "./message_definitions/extra",
+    ];
     let out_dir = var("OUT_DIR").unwrap();
     let destination = Path::new(&out_dir).join("mavlink");
-    let manifest_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml");
 
     // Parse XML once. We reuse the same protocol for mavspec's codegen and for emitting the From
     // impls that mavspec skips on inherited messages.
@@ -26,11 +28,19 @@ fn main() {
 
     generate_inherited_from_impls(&out_dir, &protocol);
 
-    BuildHelper::builder(&destination)
-        .set_protocol(protocol)
-        .set_manifest_path(&manifest_path)
-        .generate()
-        .unwrap();
+    // Use Generator directly (rather than BuildHelper) so we can opt into the
+    // `metadata` flag, which adds the `value()` / `name()` / `entries()` methods
+    // on generated enums. nadir's MessageExt macro relies on `.value()`.
+    Generator::new(
+        protocol,
+        &destination,
+        GeneratorParams {
+            metadata: true,
+            ..Default::default()
+        },
+    )
+    .generate()
+    .unwrap();
 }
 
 // mavspec emits `impl From<Msg> for Rapid` only for messages it generates as a native struct in

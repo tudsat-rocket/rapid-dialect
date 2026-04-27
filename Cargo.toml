@@ -3,8 +3,13 @@ name = "rapid-dialect"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []
+definitions = ["dep:mavinspect"]
+
 [dependencies]
 mavspec = { version = "0.6.7", features = ["rust"] }
+mavinspect = { version = "0.6.6", optional = true }
 
 [build-dependencies]
 mavspec = { version = "0.6.7", features = ["rust_gen"] }

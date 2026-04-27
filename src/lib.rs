@@ -1,5 +1,8 @@
 #![no_std]
 
+#[cfg(feature = "definitions")]
+extern crate std;
+
 #[allow(unused_imports)]
 #[allow(dead_code)]
 mod mavlink {
@@ -10,6 +13,32 @@ mod mavlink {
 
 pub use mavlink::dialects::rapid;
 pub use mavlink::dialects::Rapid;
+
+#[cfg(feature = "definitions")]
+pub mod definitions {
+    use std::sync::OnceLock;
+
+    use mavinspect::protocol::Protocol;
+    use mavinspect::Inspector;
+
+    // Counterpart to `mavspec::definitions::protocol()` for the rapid dialect
+    // tree, which mavspec's bundled definitions don't cover. Used by tooling
+    // that needs to introspect rapid messages (e.g. nadir's DB layer).
+    pub fn protocol() -> &'static Protocol {
+        static P: OnceLock<Protocol> = OnceLock::new();
+        P.get_or_init(|| {
+            const STANDARD: &str =
+                concat!(env!("CARGO_MANIFEST_DIR"), "/message_definitions/standard",);
+            const EXTRA: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/message_definitions/extra",);
+            Inspector::builder()
+                .set_sources(&[STANDARD, EXTRA])
+                .build()
+                .unwrap()
+                .parse()
+                .unwrap()
+        })
+    }
+}
 
 // `From<rapid::messages::X> for Rapid` for every inherited message variant. mavspec only emits
 // these for messages defined natively in the rapid standard, so build.rs fills in the rest.
