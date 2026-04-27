@@ -49,18 +49,24 @@ use mavlink::dialects::minimal::enums::MavState;
 // TODO: Do we need/want our flight mode type to live here or do we want to move it to the
 // firmware?
 
+// Variants are ordered roughly by mission timeline so the value also conveys progression.
 #[derive(Default, Clone, Copy, Debug, PartialEq, PartialOrd, Eq, Hash)]
 pub enum FlightMode {
     #[default]
     Idle = 0,
-    HardwareArmed = 1,
-    Armed = 2,
-    ArmedLaunchImminent = 3,
-    Burn = 4,
-    Coast = 5,
-    RecoveryDrogue = 6,
-    RecoveryMain = 7,
-    Landed = 8,
+    Filling = 1,
+    Pressurizing = 2,
+    Hold = 3,
+    Venting = 4,
+    HardwareArmed = 5,
+    Armed = 6,
+    ArmedLaunchImminent = 7,
+    Ignition = 8,
+    Burn = 9,
+    Coast = 10,
+    RecoveryDrogue = 11,
+    RecoveryMain = 12,
+    Landed = 13,
 }
 
 impl TryFrom<u8> for FlightMode {
@@ -69,14 +75,19 @@ impl TryFrom<u8> for FlightMode {
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
             0 => Ok(Self::Idle),
-            1 => Ok(Self::HardwareArmed),
-            2 => Ok(Self::Armed),
-            3 => Ok(Self::ArmedLaunchImminent),
-            4 => Ok(Self::Burn),
-            5 => Ok(Self::Coast),
-            6 => Ok(Self::RecoveryDrogue),
-            7 => Ok(Self::RecoveryMain),
-            8 => Ok(Self::Landed),
+            1 => Ok(Self::Filling),
+            2 => Ok(Self::Pressurizing),
+            3 => Ok(Self::Hold),
+            4 => Ok(Self::Venting),
+            5 => Ok(Self::HardwareArmed),
+            6 => Ok(Self::Armed),
+            7 => Ok(Self::ArmedLaunchImminent),
+            8 => Ok(Self::Ignition),
+            9 => Ok(Self::Burn),
+            10 => Ok(Self::Coast),
+            11 => Ok(Self::RecoveryDrogue),
+            12 => Ok(Self::RecoveryMain),
+            13 => Ok(Self::Landed),
             _ => Err(()),
         }
     }
@@ -92,7 +103,15 @@ impl Into<MavState> for FlightMode {
             // From MAVLink docs: System is grounded and on standby. It can be launched any time.
             Self::HardwareArmed => MavState::Standby,
             // From MAVLink docs: System is active and might be already airborne. Motors are engaged.
-            Self::Armed | Self::ArmedLaunchImminent | Self::Burn | Self::Coast => MavState::Active,
+            Self::Filling
+            | Self::Pressurizing
+            | Self::Hold
+            | Self::Venting
+            | Self::Armed
+            | Self::ArmedLaunchImminent
+            | Self::Ignition
+            | Self::Burn
+            | Self::Coast => MavState::Active,
             // From MAVLink docs: System is terminating itself (failsafe or commanded).
             Self::RecoveryDrogue | Self::RecoveryMain | Self::Landed => MavState::FlightTermination,
         }
@@ -100,11 +119,16 @@ impl Into<MavState> for FlightMode {
 }
 
 impl FlightMode {
-    pub const ALL: [FlightMode; 9] = [
+    pub const ALL: [FlightMode; 14] = [
         Self::Idle,
+        Self::Filling,
+        Self::Pressurizing,
+        Self::Hold,
+        Self::Venting,
         Self::HardwareArmed,
         Self::Armed,
         Self::ArmedLaunchImminent,
+        Self::Ignition,
         Self::Burn,
         Self::Coast,
         Self::RecoveryDrogue,
@@ -117,9 +141,14 @@ impl FlightMode {
     pub fn mavlink_name(self) -> [u8; 35] {
         let string = match self {
             Self::Idle => "IDLE",
+            Self::Filling => "FILLING",
+            Self::Pressurizing => "PRESSURIZING",
+            Self::Hold => "HOLD",
+            Self::Venting => "VENTING",
             Self::HardwareArmed => "HWARMED",
             Self::Armed => "ARMED",
             Self::ArmedLaunchImminent => "IMMINENT",
+            Self::Ignition => "IGNITION",
             Self::Burn => "BURN",
             Self::Coast => "COAST",
             Self::RecoveryDrogue => "DROGUE",

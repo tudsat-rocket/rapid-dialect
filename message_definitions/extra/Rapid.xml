@@ -21,9 +21,18 @@
             </entry>
         </enum>
         <enum name="PRESSURE_VESSEL_FLAG" bitmask="true">
-            <description>TODO</description>
-            <entry name="FLAG1" value="1">
-                <description></description>
+            <description>Status flags for a PRESSURE_VESSEL.</description>
+            <entry name="PRESSURE_VESSEL_FLAG_HEALTHY" value="1">
+                <description>All sensors reporting nominal.</description>
+            </entry>
+            <entry name="PRESSURE_VESSEL_FLAG_OVERPRESSURE" value="2">
+                <description>At least one pressure reading exceeds rated_pressure.</description>
+            </entry>
+            <entry name="PRESSURE_VESSEL_FLAG_VENTING" value="4">
+                <description>Vessel is currently being vented.</description>
+            </entry>
+            <entry name="PRESSURE_VESSEL_FLAG_PRESSURIZING" value="8">
+                <description>Vessel is currently being pressurized.</description>
             </entry>
         </enum>
         <enum name="FLUID_TYPE">
@@ -53,9 +62,62 @@
                 <description>Combustion, use when describing a combustion chamber using PRESSURE_VESSEL messages</description>
             </entry>
         </enum>
+        <enum name="PROPULSION_TYPE">
+            <description>Propulsion type advertised by VEHICLE_INFO.</description>
+            <entry name="PROPULSION_TYPE_SOLID" value="0">
+                <description>Conventional solid-fuel motor.</description>
+            </entry>
+            <entry name="PROPULSION_TYPE_HYBRID" value="1">
+                <description>Hybrid (e.g. N2O / paraffin) motor with valves and tanks.</description>
+            </entry>
+        </enum>
+        <enum name="ROCKET_CAPABILITY" bitmask="true">
+            <description>Capability bits for VEHICLE_INFO. Reserved for future use.</description>
+            <entry name="ROCKET_CAPABILITY_RESERVED" value="1">
+                <description>Reserved.</description>
+            </entry>
+        </enum>
+        <enum name="VALVE_ID">
+            <description>Identifies a specific valve on a hybrid rocket.</description>
+            <entry name="VALVE_ID_PRESSURANT_VENT" value="1">
+                <description>Post-regulator pressurant vent.</description>
+            </entry>
+            <entry name="VALVE_ID_PRESSURIZATION" value="2">
+                <description>Pressurant tank to oxidizer tank.</description>
+            </entry>
+            <entry name="VALVE_ID_OXIDIZER_VENT" value="3">
+                <description>Top of oxidizer tank.</description>
+            </entry>
+            <entry name="VALVE_ID_OXIDIZER_FILL" value="4">
+                <description>Bottom of oxidizer tank, ground fill connection.</description>
+            </entry>
+            <entry name="VALVE_ID_MAIN" value="5">
+                <description>Oxidizer tank to combustion chamber.</description>
+            </entry>
+        </enum>
+        <enum name="VALVE_STATE">
+            <description>Reported or commanded valve state.</description>
+            <entry name="VALVE_STATE_UNKNOWN" value="0">
+                <description>State unknown.</description>
+            </entry>
+            <entry name="VALVE_STATE_CLOSED" value="1">
+                <description>Closed.</description>
+            </entry>
+            <entry name="VALVE_STATE_OPEN" value="2">
+                <description>Open.</description>
+            </entry>
+            <entry name="VALVE_STATE_MOVING" value="3">
+                <description>Moving / in transit.</description>
+            </entry>
+        </enum>
     </enums>
     <messages>
-        <message id="60000" name="PRESSURE_VESSEL">
+        <message id="60000" name="ROCKET_INFO">
+            <description>Static vehicle information advertised at low rate so the GCS can adapt to vehicle type.</description>
+            <field type="uint8_t" name="propulsion_type" enum="PROPULSION_TYPE">Propulsion type.</field>
+            <field type="uint16_t" name="capability_flags" enum="ROCKET_CAPABILITY" display="bitmask">Capability bitmask.</field>
+        </message>
+        <message id="60001" name="PRESSURE_VESSEL">
             <description>TODO</description>
             <field type="uint8_t" name="id" instance="true">Pressure Vessel ID</field>
             <field type="uint16_t" name="flags" enum="PRESSURE_VESSEL_FLAG" display="bitmask">Pressure Vessel Flags</field>
@@ -63,10 +125,16 @@
             <field type="uint16_t" name="pressure1" units="kPa">Measured Pressure (Sensor 1)</field>
             <field type="uint16_t" name="pressure2" units="kPa">Measured Pressure (Sensor 2)</field>
             <field type="uint16_t" name="rated_pressure" units="kPa">Rated Pressure</field>
-            <field type="uint16_t" name="temperature1" units="cdegC">Measured Temperature (Sensor 1)</field>
-            <field type="uint16_t" name="temperature2" units="cdegC">Measured Temperature (Sensor 2)</field>
+            <field type="int16_t" name="temperature1" units="cdegC">Measured Temperature (Sensor 1)</field>
+            <field type="int16_t" name="temperature2" units="cdegC">Measured Temperature (Sensor 2)</field>
             <field type="uint16_t" name="volume" units="cm^3">Volume</field>
             <field type="uint16_t" name="level" units="c%">Liquid level in tanks with (partially) liquid contents</field>
+        </message>
+        <message id="60002" name="VALVE">
+            <description>Reported and commanded state of a single valve.</description>
+            <field type="uint8_t" name="id" instance="true" enum="VALVE_ID">Valve identifier.</field>
+            <field type="uint8_t" name="state" enum="VALVE_STATE">Reported valve state.</field>
+            <field type="uint8_t" name="commanded" enum="VALVE_STATE">Last commanded state.</field>
         </message>
     </messages>
 </mavlink>
