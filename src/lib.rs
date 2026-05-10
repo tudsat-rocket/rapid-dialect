@@ -46,6 +46,11 @@ pub mod definitions {
 // these for messages defined natively in the rapid standard, so build.rs fills in the rest.
 include!(concat!(env!("OUT_DIR"), "/rapid_from_impls.rs"));
 
+// mavspec's `Dialect` derive emits `MessageSpec` and `IntoPayload` for the dialect enum, but not
+// the empty `Message` blanket. Add it so callers can pass `&Rapid` directly to anything taking
+// `&dyn Message` (e.g. `mavio::Endpoint::next_frame`) without dispatching on every variant.
+impl mavspec::rust::spec::Message for Rapid {}
+
 use mavlink::dialects::minimal::enums::MavState;
 
 // TODO: Do we need/want our flight mode type to live here or do we want to move it to the
