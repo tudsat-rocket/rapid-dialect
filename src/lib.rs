@@ -52,21 +52,33 @@ use mavlink::dialects::minimal::enums::MavState;
 // Variants are ordered roughly by mission timeline so the value also conveys progression.
 #[derive(Default, Clone, Copy, Debug, PartialEq, PartialOrd, Eq, Hash)]
 pub enum FlightMode {
+    /// Rocket is idle, outputs are physically disconnected
     #[default]
     Idle = 0,
-    Filling = 1,
-    Pressurizing = 2,
-    Hold = 3,
-    Venting = 4,
-    HardwareArmed = 5,
+    /// Rocket is idle software-side, but arming pins are pulled/switches are thrown
+    HardwareArmed = 1,
+    /// [hybrid] Oxidizer is being filled, ox vent valve may be opened
+    Filling = 2,
+    /// [hybrid] Vents both pressurant and oxidizer
+    Venting = 3,
+    /// [hybrid] Pressurization valve opens, ignition is expected to follow soon
+    Pressurizing = 4,
+    /// [hybrid] Hold all valve states when entered, allows manual operation
+    Hold = 5,
+    /// [solid] Rocket is awaiting external ignition, detects launch via acceleration
     Armed = 6,
-    ArmedLaunchImminent = 7,
-    Ignition = 8,
-    Burn = 9,
-    Coast = 10,
-    RecoveryDrogue = 11,
-    RecoveryMain = 12,
-    Landed = 13,
+    /// [hybrid] Runs ignition sequence, but switch to Burn still happens via launch accel. detection
+    Ignition = 7,
+    /// Motor is active, thrust exceeds drag
+    Burn = 8,
+    /// Coasting to apogee
+    Coast = 9,
+    /// Entered on apogee, triggers drogue deployment
+    RecoveryDrogue = 10,
+    /// Entered below threshold altitude (above ground), triggers main parachute
+    RecoveryMain = 11,
+    /// Entered on touchdown
+    Landed = 12,
 }
 
 impl TryFrom<u8> for FlightMode {
@@ -75,19 +87,18 @@ impl TryFrom<u8> for FlightMode {
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
             0 => Ok(Self::Idle),
-            1 => Ok(Self::Filling),
-            2 => Ok(Self::Pressurizing),
-            3 => Ok(Self::Hold),
-            4 => Ok(Self::Venting),
-            5 => Ok(Self::HardwareArmed),
+            1 => Ok(Self::HardwareArmed),
+            2 => Ok(Self::Filling),
+            3 => Ok(Self::Venting),
+            4 => Ok(Self::Pressurizing),
+            5 => Ok(Self::Hold),
             6 => Ok(Self::Armed),
-            7 => Ok(Self::ArmedLaunchImminent),
-            8 => Ok(Self::Ignition),
-            9 => Ok(Self::Burn),
-            10 => Ok(Self::Coast),
-            11 => Ok(Self::RecoveryDrogue),
-            12 => Ok(Self::RecoveryMain),
-            13 => Ok(Self::Landed),
+            7 => Ok(Self::Ignition),
+            8 => Ok(Self::Burn),
+            9 => Ok(Self::Coast),
+            10 => Ok(Self::RecoveryDrogue),
+            11 => Ok(Self::RecoveryMain),
+            12 => Ok(Self::Landed),
             _ => Err(()),
         }
     }
@@ -108,7 +119,6 @@ impl Into<MavState> for FlightMode {
             | Self::Hold
             | Self::Venting
             | Self::Armed
-            | Self::ArmedLaunchImminent
             | Self::Ignition
             | Self::Burn
             | Self::Coast => MavState::Active,
@@ -119,15 +129,14 @@ impl Into<MavState> for FlightMode {
 }
 
 impl FlightMode {
-    pub const ALL: [FlightMode; 14] = [
+    pub const ALL: [FlightMode; 13] = [
         Self::Idle,
+        Self::HardwareArmed,
         Self::Filling,
+        Self::Venting,
         Self::Pressurizing,
         Self::Hold,
-        Self::Venting,
-        Self::HardwareArmed,
         Self::Armed,
-        Self::ArmedLaunchImminent,
         Self::Ignition,
         Self::Burn,
         Self::Coast,
@@ -141,13 +150,12 @@ impl FlightMode {
     pub fn mavlink_name(self) -> [u8; 35] {
         let string = match self {
             Self::Idle => "IDLE",
-            Self::Filling => "FILLING",
-            Self::Pressurizing => "PRESSURIZING",
-            Self::Hold => "HOLD",
-            Self::Venting => "VENTING",
             Self::HardwareArmed => "HWARMED",
+            Self::Filling => "FILL",
+            Self::Venting => "VENT",
+            Self::Pressurizing => "PRESS",
+            Self::Hold => "HOLD",
             Self::Armed => "ARMED",
-            Self::ArmedLaunchImminent => "IMMINENT",
             Self::Ignition => "IGNITION",
             Self::Burn => "BURN",
             Self::Coast => "COAST",
