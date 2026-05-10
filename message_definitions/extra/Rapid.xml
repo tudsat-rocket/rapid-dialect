@@ -9,10 +9,10 @@
     <enums>
         <!-- Extension of MAV_CMD from common.xml -->
         <enum name="MAV_CMD">
-            <entry value="60000" name="MAV_CMD_FOOBAR">
-                <description>This is a test.</description>
-                <param index="1" label="foo" units="m">Height of foo</param>
-                <param index="2" label="bar">blub</param>
+            <entry value="60000" name="MAV_CMD_COMMAND_VALVE">
+                <description></description>
+                <param index="1" label="Valve" enum="VALVE_ID">Valve to command</param>
+                <param index="2" minValue="0" maxValue="1" label="Target Position">Target Valve Position (0 = fully closed, 1 = fully open)</param>
                 <param index="3">Empty</param>
                 <param index="4">Empty</param>
                 <param index="5">Empty</param>
@@ -95,21 +95,6 @@
                 <description>Oxidizer tank to combustion chamber.</description>
             </entry>
         </enum>
-        <enum name="VALVE_STATE">
-            <description>Reported or commanded valve state.</description>
-            <entry name="VALVE_STATE_UNKNOWN" value="0">
-                <description>State unknown.</description>
-            </entry>
-            <entry name="VALVE_STATE_CLOSED" value="1">
-                <description>Closed.</description>
-            </entry>
-            <entry name="VALVE_STATE_OPEN" value="2">
-                <description>Open.</description>
-            </entry>
-            <entry name="VALVE_STATE_MOVING" value="3">
-                <description>Moving / in transit.</description>
-            </entry>
-        </enum>
     </enums>
     <messages>
         <message id="60000" name="ROCKET_INFO">
@@ -133,8 +118,8 @@
         <message id="60002" name="VALVE">
             <description>Reported and commanded state of a single valve.</description>
             <field type="uint8_t" name="id" instance="true" enum="VALVE_ID">Valve identifier.</field>
-            <field type="uint8_t" name="state" enum="VALVE_STATE">Reported valve state.</field>
-            <field type="uint8_t" name="commanded" enum="VALVE_STATE">Last commanded state.</field>
+            <field type="float" name="state">Reported valve state.</field>
+            <field type="float" name="commanded">Last commanded state.</field>
         </message>
     </messages>
 </mavlink>

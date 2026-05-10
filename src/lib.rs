@@ -11,6 +11,8 @@ mod mavlink {
     include!(concat!(env!("OUT_DIR"), "/mavlink/mod.rs"));
 }
 
+use core::time::Duration;
+
 pub use mavlink::dialects::rapid;
 pub use mavlink::dialects::Rapid;
 
@@ -170,4 +172,12 @@ impl FlightMode {
         }
         buf
     }
+}
+
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub enum ValveCommand {
+    Open,
+    Partial(f32),
+    PulseOpen(Duration),
+    Close,
 }
