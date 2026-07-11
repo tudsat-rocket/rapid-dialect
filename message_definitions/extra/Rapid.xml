@@ -79,20 +79,35 @@
         </enum>
         <enum name="VALVE_ID">
             <description>Identifies a specific valve on a hybrid rocket.</description>
-            <entry name="VALVE_ID_PRESSURANT_VENT" value="1">
+            <entry name="VALVE_ID_PRESSURANT_VENT" value="0">
                 <description>Post-regulator pressurant vent.</description>
             </entry>
-            <entry name="VALVE_ID_PRESSURIZATION" value="2">
+            <entry name="VALVE_ID_PRESSURIZATION" value="1">
                 <description>Pressurant tank to oxidizer tank.</description>
             </entry>
-            <entry name="VALVE_ID_OXIDIZER_VENT" value="3">
+            <entry name="VALVE_ID_OXIDIZER_VENT" value="2">
                 <description>Top of oxidizer tank.</description>
             </entry>
-            <entry name="VALVE_ID_OXIDIZER_FILL" value="4">
+            <entry name="VALVE_ID_OXIDIZER_FILL" value="3">
                 <description>Bottom of oxidizer tank, ground fill connection.</description>
             </entry>
-            <entry name="VALVE_ID_MAIN" value="5">
+            <entry name="VALVE_ID_MAIN" value="4">
                 <description>Oxidizer tank to combustion chamber.</description>
+            </entry>
+            <entry name="VALVE_ID_EXT_PRESSURANT_FILL" value="5">
+                <description>External pressurant filling line on pad, to rocket.</description>
+            </entry>
+            <entry name="VALVE_ID_EXT_OXIDIZER_FILL" value="6">
+                <description>External oxidizer filling line on pad, to rocket.</description>
+            </entry>
+            <entry name="VALVE_ID_EXT_OXIDIZER_DEPRESSURE" value="7">
+                <description>External oxidizer filling line on pad, to atmosphere.</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_1" value="8">
+                <description>Extra Actuator 1.</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_2" value="9">
+                <description>Extra Actuator 2.</description>
             </entry>
         </enum>
     </enums>
