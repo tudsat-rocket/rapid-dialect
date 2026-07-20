@@ -28,11 +28,8 @@
             <entry name="PRESSURE_VESSEL_FLAG_OVERPRESSURE" value="2">
                 <description>At least one pressure reading exceeds rated_pressure.</description>
             </entry>
-            <entry name="PRESSURE_VESSEL_FLAG_VENTING" value="4">
-                <description>Vessel is currently being vented.</description>
-            </entry>
-            <entry name="PRESSURE_VESSEL_FLAG_PRESSURIZING" value="8">
-                <description>Vessel is currently being pressurized.</description>
+            <entry name="PRESSURE_VESSEL_FLAG_EXTERNAL" value="4">
+                <description>Vessel is an external/offboard (ground support) tank, not part of the flight vehicle.</description>
             </entry>
         </enum>
         <enum name="FLUID_TYPE">
@@ -94,20 +91,47 @@
             <entry name="VALVE_ID_MAIN" value="4">
                 <description>Oxidizer tank to combustion chamber.</description>
             </entry>
-            <entry name="VALVE_ID_EXT_PRESSURANT_FILL" value="5">
+            <entry name="VALVE_ID_EXTERNAL_PRESSURANT_FILL" value="5">
                 <description>External pressurant filling line on pad, to rocket.</description>
             </entry>
-            <entry name="VALVE_ID_EXT_OXIDIZER_FILL" value="6">
+            <entry name="VALVE_ID_EXTERNAL_OXIDIZER_FILL" value="6">
                 <description>External oxidizer filling line on pad, to rocket.</description>
             </entry>
-            <entry name="VALVE_ID_EXT_OXIDIZER_DEPRESSURE" value="7">
-                <description>External oxidizer filling line on pad, to atmosphere.</description>
+            <entry name="VALVE_ID_EXTERNAL_PRESSURANT_VENT" value="7">
+                <description>Reserved: external pressurant tank vent.</description>
             </entry>
-            <entry name="VALVE_ID_EXTRA_1" value="8">
-                <description>Extra Actuator 1.</description>
+            <entry name="VALVE_ID_EXTERNAL_OXIDIZER_VENT" value="8">
+                <description>Reserved: external oxidizer tank vent.</description>
             </entry>
-            <entry name="VALVE_ID_EXTRA_2" value="9">
-                <description>Extra Actuator 2.</description>
+            <entry name="VALVE_ID_EXTRA_1" value="245">
+                <description>Extra Actuator 1</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_2" value="246">
+                <description>Extra Actuator 2</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_3" value="247">
+                <description>Extra Actuator 3</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_4" value="248">
+                <description>Extra Actuator 4</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_5" value="249">
+                <description>Extra Actuator 5</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_6" value="250">
+                <description>Extra Actuator 6</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_7" value="251">
+                <description>Extra Actuator 7</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_8" value="252">
+                <description>Extra Actuator 8</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_9" value="253">
+                <description>Extra Actuator 9</description>
+            </entry>
+            <entry name="VALVE_ID_EXTRA_10" value="254">
+                <description>Extra Actuator 10</description>
             </entry>
         </enum>
     </enums>
