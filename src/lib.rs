@@ -62,10 +62,10 @@ pub enum FlightMode {
     /// Rocket is idle, outputs are physically disconnected
     #[default]
     Idle = 0,
-    /// Rocket is idle software-side, but arming pins are pulled/switches are thrown
-    HardwareArmed = 1,
-    /// [hybrid] Oxidizer is being filled, ox vent valve may be opened
-    Filling = 2,
+    /// [hybrid] Pressurant is transferred from the external tank into the rocket pressurant tank
+    FillPressurant = 1,
+    /// [hybrid] Oxidizer is transferred from the external tank into the rocket, vents may be pulsed
+    FillOxidizer = 2,
     /// [hybrid] Vents both pressurant and oxidizer
     Venting = 3,
     /// [hybrid] Pressurization valve opens, ignition is expected to follow soon
@@ -94,8 +94,8 @@ impl TryFrom<u8> for FlightMode {
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
             0 => Ok(Self::Idle),
-            1 => Ok(Self::HardwareArmed),
-            2 => Ok(Self::Filling),
+            1 => Ok(Self::FillPressurant),
+            2 => Ok(Self::FillOxidizer),
             3 => Ok(Self::Venting),
             4 => Ok(Self::Pressurizing),
             5 => Ok(Self::Hold),
@@ -116,12 +116,9 @@ impl TryFrom<u8> for FlightMode {
 impl Into<MavState> for FlightMode {
     fn into(self) -> MavState {
         match self {
-            // From MAVLink docs: System is calibrating and not flight-ready.
-            Self::Idle => MavState::Calibrating,
-            // From MAVLink docs: System is grounded and on standby. It can be launched any time.
-            Self::HardwareArmed => MavState::Standby,
-            // From MAVLink docs: System is active and might be already airborne. Motors are engaged.
-            Self::Filling
+            Self::Idle => MavState::Standby,
+            Self::FillPressurant
+            | Self::FillOxidizer
             | Self::Pressurizing
             | Self::Hold
             | Self::Venting
@@ -129,7 +126,6 @@ impl Into<MavState> for FlightMode {
             | Self::Ignition
             | Self::Burn
             | Self::Coast => MavState::Active,
-            // From MAVLink docs: System is terminating itself (failsafe or commanded).
             Self::RecoveryDrogue | Self::RecoveryMain | Self::Landed => MavState::FlightTermination,
         }
     }
@@ -138,8 +134,8 @@ impl Into<MavState> for FlightMode {
 impl FlightMode {
     pub const ALL: [FlightMode; 13] = [
         Self::Idle,
-        Self::HardwareArmed,
-        Self::Filling,
+        Self::FillPressurant,
+        Self::FillOxidizer,
         Self::Venting,
         Self::Pressurizing,
         Self::Hold,
@@ -157,10 +153,10 @@ impl FlightMode {
     pub fn mavlink_name(self) -> [u8; 35] {
         let string = match self {
             Self::Idle => "IDLE",
-            Self::HardwareArmed => "HWARMED",
-            Self::Filling => "FILL",
+            Self::FillPressurant => "PRESS FILL",
+            Self::FillOxidizer => "OX FILL",
             Self::Venting => "VENT",
-            Self::Pressurizing => "PRESS",
+            Self::Pressurizing => "PRESSURIZE",
             Self::Hold => "HOLD",
             Self::Armed => "ARMED",
             Self::Ignition => "IGNITION",
