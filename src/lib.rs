@@ -151,20 +151,21 @@ impl FlightMode {
     /// Name as a 35-length char array, as included in AVAILABLE_MODES MAVLink messages. Must
     /// include null termination character.
     pub fn mavlink_name(self) -> [u8; 35] {
+        // no format in no_std, vim macro goes brrr
         let string = match self {
-            Self::Idle => "IDLE",
-            Self::FillPressurant => "PRESS FILL",
-            Self::FillOxidizer => "OX FILL",
-            Self::Venting => "VENT",
-            Self::Pressurizing => "PRESSURIZE",
-            Self::Hold => "HOLD",
-            Self::Armed => "ARMED",
-            Self::Ignition => "IGNITION",
-            Self::Burn => "BURN",
-            Self::Coast => "COAST",
-            Self::RecoveryDrogue => "DROGUE",
-            Self::RecoveryMain => "MAIN",
-            Self::Landed => "LANDED",
+            Self::Idle => "Idle",
+            Self::FillPressurant => "FillPressurant",
+            Self::FillOxidizer => "FillOxidizer",
+            Self::Venting => "Venting",
+            Self::Pressurizing => "Pressurizing",
+            Self::Hold => "Hold",
+            Self::Armed => "Armed",
+            Self::Ignition => "Ignition",
+            Self::Burn => "Burn",
+            Self::Coast => "Coast",
+            Self::RecoveryDrogue => "RecoveryDrogue",
+            Self::RecoveryMain => "RecoveryMain",
+            Self::Landed => "Landed",
         };
 
         let mut buf = [0; 35];
