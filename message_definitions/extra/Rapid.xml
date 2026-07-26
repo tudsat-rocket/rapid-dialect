@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
 <mavlink>
-    <!-- The low IDs are used by common. -->
-    <!-- ArduPilot seems to use 4xxxx && 5xxxx -->
-    <!-- We start at 60000 -->
+    <!-- mavlink message ID range: 20000 - 20099, mavlink command ID range: 20000 - 20099 -->
+    <!-- Picked to stay clear of every dialect in mavlink/mavlink -->
     <include>../standard/message_definitions/v1.0/common.xml</include>
     <version>0</version>
     <dialect>0</dialect>
     <enums>
         <!-- Extension of MAV_CMD from common.xml -->
         <enum name="MAV_CMD">
-            <entry value="60000" name="MAV_CMD_COMMAND_VALVE">
+            <entry value="20000" name="MAV_CMD_COMMAND_VALVE">
                 <description></description>
                 <param index="1" label="Valve" enum="VALVE_ID">Valve to command</param>
                 <param index="2" minValue="0" maxValue="1" label="Target Position">Target Valve Position (0 = fully closed, 1 = fully open)</param>
@@ -136,12 +135,12 @@
         </enum>
     </enums>
     <messages>
-        <message id="60000" name="ROCKET_INFO">
+        <message id="20000" name="ROCKET_INFO">
             <description>Static vehicle information advertised at low rate so the GCS can adapt to vehicle type.</description>
             <field type="uint8_t" name="propulsion_type" enum="PROPULSION_TYPE">Propulsion type.</field>
             <field type="uint16_t" name="capability_flags" enum="ROCKET_CAPABILITY" display="bitmask">Capability bitmask.</field>
         </message>
-        <message id="60001" name="PRESSURE_VESSEL">
+        <message id="20001" name="PRESSURE_VESSEL">
             <description>TODO</description>
             <field type="uint8_t" name="id" instance="true">Pressure Vessel ID</field>
             <field type="uint16_t" name="flags" enum="PRESSURE_VESSEL_FLAG" display="bitmask">Pressure Vessel Flags</field>
@@ -154,7 +153,7 @@
             <field type="uint16_t" name="volume" units="cm^3">Volume</field>
             <field type="uint16_t" name="level" units="c%">Liquid level in tanks with (partially) liquid contents</field>
         </message>
-        <message id="60002" name="VALVE">
+        <message id="20002" name="VALVE">
             <description>Reported and commanded state of a single valve.</description>
             <field type="uint8_t" name="id" instance="true" enum="VALVE_ID">Valve identifier.</field>
             <field type="float" name="state">Reported valve state.</field>
