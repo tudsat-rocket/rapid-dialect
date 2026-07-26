@@ -67,23 +67,23 @@ pub enum FlightMode {
     /// [hybrid] Oxidizer is transferred from the external tank into the rocket, vents may be pulsed
     FillOxidizer = 2,
     /// [hybrid] Vents both pressurant and oxidizer
-    Venting = 3,
+    Vent = 3,
     /// [hybrid] Pressurization valve opens, ignition is expected to follow soon
-    Pressurizing = 4,
+    Pressurize = 4,
     /// [hybrid] Hold all valve states when entered, allows manual operation
     Hold = 5,
     /// [solid] Rocket is awaiting external ignition, detects launch via acceleration
-    Armed = 6,
+    DetectLaunch = 6,
     /// [hybrid] Runs ignition sequence, but switch to Burn still happens via launch accel. detection
-    Ignition = 7,
+    Ignite = 7,
     /// Motor is active, thrust exceeds drag
     Burn = 8,
     /// Coasting to apogee
     Coast = 9,
     /// Entered on apogee, triggers drogue deployment
-    RecoveryDrogue = 10,
+    DeployDrogue = 10,
     /// Entered below threshold altitude (above ground), triggers main parachute
-    RecoveryMain = 11,
+    DeployMain = 11,
     /// Entered on touchdown
     Landed = 12,
 }
@@ -96,15 +96,15 @@ impl TryFrom<u8> for FlightMode {
             0 => Ok(Self::Idle),
             1 => Ok(Self::FillPressurant),
             2 => Ok(Self::FillOxidizer),
-            3 => Ok(Self::Venting),
-            4 => Ok(Self::Pressurizing),
+            3 => Ok(Self::Vent),
+            4 => Ok(Self::Pressurize),
             5 => Ok(Self::Hold),
-            6 => Ok(Self::Armed),
-            7 => Ok(Self::Ignition),
+            6 => Ok(Self::DetectLaunch),
+            7 => Ok(Self::Ignite),
             8 => Ok(Self::Burn),
             9 => Ok(Self::Coast),
-            10 => Ok(Self::RecoveryDrogue),
-            11 => Ok(Self::RecoveryMain),
+            10 => Ok(Self::DeployDrogue),
+            11 => Ok(Self::DeployMain),
             12 => Ok(Self::Landed),
             _ => Err(()),
         }
@@ -119,14 +119,14 @@ impl Into<MavState> for FlightMode {
             Self::Idle => MavState::Standby,
             Self::FillPressurant
             | Self::FillOxidizer
-            | Self::Pressurizing
+            | Self::Pressurize
             | Self::Hold
-            | Self::Venting
-            | Self::Armed
-            | Self::Ignition
+            | Self::Vent
+            | Self::DetectLaunch
+            | Self::Ignite
             | Self::Burn
             | Self::Coast => MavState::Active,
-            Self::RecoveryDrogue | Self::RecoveryMain | Self::Landed => MavState::FlightTermination,
+            Self::DeployDrogue | Self::DeployMain | Self::Landed => MavState::FlightTermination,
         }
     }
 }
@@ -136,15 +136,15 @@ impl FlightMode {
         Self::Idle,
         Self::FillPressurant,
         Self::FillOxidizer,
-        Self::Venting,
-        Self::Pressurizing,
+        Self::Vent,
+        Self::Pressurize,
         Self::Hold,
-        Self::Armed,
-        Self::Ignition,
+        Self::DetectLaunch,
+        Self::Ignite,
         Self::Burn,
         Self::Coast,
-        Self::RecoveryDrogue,
-        Self::RecoveryMain,
+        Self::DeployDrogue,
+        Self::DeployMain,
         Self::Landed,
     ];
 
@@ -156,15 +156,15 @@ impl FlightMode {
             Self::Idle => "Idle",
             Self::FillPressurant => "FillPressurant",
             Self::FillOxidizer => "FillOxidizer",
-            Self::Venting => "Venting",
-            Self::Pressurizing => "Pressurizing",
+            Self::Vent => "Vent",
+            Self::Pressurize => "Pressurize",
             Self::Hold => "Hold",
-            Self::Armed => "Armed",
-            Self::Ignition => "Ignition",
+            Self::DetectLaunch => "DetectLaunch",
+            Self::Ignite => "Ignite",
             Self::Burn => "Burn",
             Self::Coast => "Coast",
-            Self::RecoveryDrogue => "RecoveryDrogue",
-            Self::RecoveryMain => "RecoveryMain",
+            Self::DeployDrogue => "DeployDrogue",
+            Self::DeployMain => "DeployMain",
             Self::Landed => "Landed",
         };
 
