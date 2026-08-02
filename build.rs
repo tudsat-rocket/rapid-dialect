@@ -27,6 +27,7 @@ fn main() {
         .unwrap();
 
     generate_inherited_from_impls(&out_dir, &protocol);
+    serialize_protocol(&out_dir, &protocol);
 
     // Use Generator directly (rather than BuildHelper) so we can opt into the
     // `metadata` flag, which adds the `value()` / `name()` / `entries()` methods
@@ -41,6 +42,19 @@ fn main() {
     )
     .generate()
     .unwrap();
+}
+
+// Stash the parsed and compressed protocol next to the generated code.
+fn serialize_protocol(out_dir: &str, protocol: &Protocol) {
+    const PROTOCOL_FILE: &str = "rapid-protocol.postcard.deflate";
+    const PROTOCOL_COMPRESSION: u8 = 6;
+
+    let bytes = postcard::to_allocvec(protocol).expect("failed to serialize the rapid protocol");
+    let compressed = miniz_oxide::deflate::compress_to_vec(&bytes, PROTOCOL_COMPRESSION);
+
+    let path = Path::new(out_dir).join(PROTOCOL_FILE);
+    fs::write(&path, &compressed)
+        .unwrap_or_else(|e| panic!("failed to write {}: {e}", path.display()));
 }
 
 // mavspec emits `impl From<Msg> for Rapid` only for messages it generates as a native struct in

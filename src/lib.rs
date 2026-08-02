@@ -21,23 +21,16 @@ pub mod definitions {
     use std::sync::OnceLock;
 
     use mavinspect::protocol::Protocol;
-    use mavinspect::Inspector;
 
-    // Counterpart to `mavspec::definitions::protocol()` for the rapid dialect
-    // tree, which mavspec's bundled definitions don't cover. Used by tooling
-    // that needs to introspect rapid messages (e.g. nadir's DB layer).
+    /// Reads protocol definitions which were generated and embedded at compile-time.
     pub fn protocol() -> &'static Protocol {
         static P: OnceLock<Protocol> = OnceLock::new();
         P.get_or_init(|| {
-            const STANDARD: &str =
-                concat!(env!("CARGO_MANIFEST_DIR"), "/message_definitions/standard",);
-            const EXTRA: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/message_definitions/extra",);
-            Inspector::builder()
-                .set_sources(&[STANDARD, EXTRA])
-                .build()
-                .unwrap()
-                .parse()
-                .unwrap()
+            const BYTES: &[u8] =
+                include_bytes!(concat!(env!("OUT_DIR"), "/rapid-protocol.postcard.deflate"));
+            let postcard = miniz_oxide::inflate::decompress_to_vec(BYTES)
+                .expect("the embedded rapid protocol did not inflate");
+            postcard::from_bytes(&postcard).expect("the embedded rapid protocol is corrupt")
         })
     }
 }

@@ -404,6 +404,8 @@ dependencies = [
  "heck",
  "mavinspect",
  "mavspec",
+ "miniz_oxide",
+ "postcard",
 ]
 
 [[package]]
