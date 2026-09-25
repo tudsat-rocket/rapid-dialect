@@ -133,6 +133,18 @@
                 <description>Extra Actuator 10</description>
             </entry>
         </enum>
+        <enum name="VALVE_FLAG" bitmask="true">
+            <description>Properties of a VALVE.</description>
+            <entry name="VALVE_FLAG_THROTTLEABLE" value="1">
+                <description>Valve supports intermediate positions (e.g. servo valve). Unset: binary valve (e.g. solenoid).</description>
+            </entry>
+            <entry name="VALVE_FLAG_HEATED" value="2">
+                <description>Valve has a heater.</description>
+            </entry>
+            <entry name="VALVE_FLAG_HEATER_ON" value="4">
+                <description>Heater is currently on.</description>
+            </entry>
+        </enum>
     </enums>
     <messages>
         <message id="20000" name="ROCKET_INFO">
@@ -158,6 +170,9 @@
             <field type="uint8_t" name="id" instance="true" enum="VALVE_ID">Valve identifier.</field>
             <field type="float" name="state">Reported valve state.</field>
             <field type="float" name="commanded">Last commanded state.</field>
+            <extensions/>
+            <field type="uint8_t" name="flags" enum="VALVE_FLAG" display="bitmask">Valve flags.</field>
+            <field type="int16_t" name="temperature" units="cdegC">Measured valve temperature.</field>
         </message>
     </messages>
 </mavlink>
