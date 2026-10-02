@@ -61,24 +61,28 @@ pub enum FlightMode {
     FillOxidizer = 2,
     /// [hybrid] Vents both pressurant and oxidizer
     Vent = 3,
+    /// [hybrid] Releases the quick disconnects and starts retracting the arms
+    Disconnect = 4,
+    /// [hybrid] Fully retracts the release arms
+    Retract = 5,
     /// [hybrid] Pressurization valve opens, ignition is expected to follow soon
-    Pressurize = 4,
+    Pressurize = 6,
     /// [hybrid] Hold all valve states when entered, allows manual operation
-    Hold = 5,
+    Hold = 7,
     /// [solid] Rocket is awaiting external ignition, detects launch via acceleration
-    DetectLaunch = 6,
+    DetectLaunch = 8,
     /// [hybrid] Runs ignition sequence, but switch to Burn still happens via launch accel. detection
-    Ignite = 7,
+    Ignite = 9,
     /// Motor is active, thrust exceeds drag
-    Burn = 8,
+    Burn = 10,
     /// Coasting to apogee
-    Coast = 9,
+    Coast = 11,
     /// Entered on apogee, triggers drogue deployment
-    DeployDrogue = 10,
+    DeployDrogue = 12,
     /// Entered below threshold altitude (above ground), triggers main parachute
-    DeployMain = 11,
+    DeployMain = 13,
     /// Entered on touchdown
-    Landed = 12,
+    Landed = 14,
 }
 
 impl TryFrom<u8> for FlightMode {
@@ -90,15 +94,17 @@ impl TryFrom<u8> for FlightMode {
             1 => Ok(Self::FillPressurant),
             2 => Ok(Self::FillOxidizer),
             3 => Ok(Self::Vent),
-            4 => Ok(Self::Pressurize),
-            5 => Ok(Self::Hold),
-            6 => Ok(Self::DetectLaunch),
-            7 => Ok(Self::Ignite),
-            8 => Ok(Self::Burn),
-            9 => Ok(Self::Coast),
-            10 => Ok(Self::DeployDrogue),
-            11 => Ok(Self::DeployMain),
-            12 => Ok(Self::Landed),
+            4 => Ok(Self::Disconnect),
+            5 => Ok(Self::Retract),
+            6 => Ok(Self::Pressurize),
+            7 => Ok(Self::Hold),
+            8 => Ok(Self::DetectLaunch),
+            9 => Ok(Self::Ignite),
+            10 => Ok(Self::Burn),
+            11 => Ok(Self::Coast),
+            12 => Ok(Self::DeployDrogue),
+            13 => Ok(Self::DeployMain),
+            14 => Ok(Self::Landed),
             _ => Err(()),
         }
     }
@@ -112,6 +118,8 @@ impl Into<MavState> for FlightMode {
             Self::Idle => MavState::Standby,
             Self::FillPressurant
             | Self::FillOxidizer
+            | Self::Disconnect
+            | Self::Retract
             | Self::Pressurize
             | Self::Hold
             | Self::Vent
@@ -125,11 +133,13 @@ impl Into<MavState> for FlightMode {
 }
 
 impl FlightMode {
-    pub const ALL: [FlightMode; 13] = [
+    pub const ALL: [FlightMode; 15] = [
         Self::Idle,
         Self::FillPressurant,
         Self::FillOxidizer,
         Self::Vent,
+        Self::Disconnect,
+        Self::Retract,
         Self::Pressurize,
         Self::Hold,
         Self::DetectLaunch,
@@ -150,6 +160,8 @@ impl FlightMode {
             Self::FillPressurant => "FillPressurant",
             Self::FillOxidizer => "FillOxidizer",
             Self::Vent => "Vent",
+            Self::Disconnect => "Disconnect",
+            Self::Retract => "Retract",
             Self::Pressurize => "Pressurize",
             Self::Hold => "Hold",
             Self::DetectLaunch => "DetectLaunch",
