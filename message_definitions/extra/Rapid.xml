@@ -144,6 +144,9 @@
             <entry name="VALVE_FLAG_HEATER_ON" value="4">
                 <description>Heater is currently on.</description>
             </entry>
+            <entry name="VALVE_FLAG_COMMANDABLE" value="8">
+                <description>Valve may be commanded by the operator via MAV_CMD_COMMAND_VALVE. Unset: controlled by onboard logic only.</description>
+            </entry>
         </enum>
     </enums>
     <messages>
@@ -173,6 +176,7 @@
             <extensions/>
             <field type="uint8_t" name="flags" enum="VALVE_FLAG" display="bitmask">Valve flags.</field>
             <field type="int16_t" name="temperature" units="cdegC">Measured valve temperature.</field>
+            <field type="uint16_t" name="drive_current" units="mA">Measured actuator drive current.</field>
         </message>
     </messages>
 </mavlink>
